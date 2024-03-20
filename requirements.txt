@@ -5,4 +5,4 @@ MDAnalysis==2.7.0
 MDAnalysisTests==2.7.0
 nglview==3.1.2
 pytraj==2.0.6.dev0
-python==3.8
+python==3.10
