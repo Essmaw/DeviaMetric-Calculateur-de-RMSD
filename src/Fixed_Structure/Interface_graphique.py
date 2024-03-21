@@ -1,13 +1,12 @@
-"""RMSD Calculator Tool.
+"""Outil de calcul du RMSD.
 
-This Tkinter application calculates the Root-Mean-Square Deviation (RMSD) between two trajectories or PDB files.
-It allows users to select the files and displays the average RMSD in Angstroms. 
+Cette application Tkinter calcule la Déviation Quadratique Moyenne des Racines (RMSD) entre deux fichiers PDB.
+Elle permet aux utilisateurs de sélectionner les fichiers et affiche le RMSD moyen en Angströms.
 
-
-Usage:
+Utilisation:
 ======
-From RMSD_Calculator/ repository, run:
-    python run src/main.py
+À partir du répertoire DeviaMetric-Calculateur-de-RMSD/, exécutez :
+    python run src/Fixed_Structure/Interface_graphique.py
 
 """
 
@@ -73,7 +72,19 @@ class RMSDCalculatorApp:
         self.output_text.grid(row=4, column=0, columnspan=2, padx=5, pady=5)
         self.copy_button.grid(row=5, column=0, columnspan=2, padx=5, pady=5)
 
+
     def get_structure_from_pdb_id(self,pdb_id):
+        """Télécharge un fichier PDB à partir d'un ID PDB spécifié.
+
+        Télécharge un fichier PDB à partir de l'ID PDB spécifié en utilisant l'API RCSB PDB.
+        Le fichier téléchargé est enregistré localement avec le même nom que l'ID PDB en minuscules.
+
+        Args:
+            pdb_id (str): L'identifiant PDB de la structure à télécharger.
+
+        Returns:
+            str or None: Le chemin absolu du fichier PDB téléchargé, ou None si une erreur s'est produite.
+        """
         pdb_id = pdb_id.get()
         print(f"Téléchargement du fichier PDB de l'ID {pdb_id} en cours...")
         # Construction de l'URL PDB
@@ -100,6 +111,23 @@ class RMSDCalculatorApp:
 
 
     def align_pdb_files(self, file1, file2, align_type):
+        """Aligne deux fichiers PDB selon un type d'alignement spécifié.
+
+        Cette fonction aligne deux fichiers PDB en fonction du type d'alignement spécifié, tel que les carbones alpha, 
+        tous les atomes, ou seulement le backbone. Les deux fichiers PDB sont analysés pour extraire les atomes pertinents
+        selon le type d'alignement choisi. Ensuite, une superposition est effectuée pour aligner les atomes de la 
+        deuxième structure sur ceux de la première structure.
+
+        Args:
+            file1 (str): Chemin vers le premier fichier PDB.
+            file2 (str): Chemin vers le deuxième fichier PDB.
+            align_type (str): Type d'alignement à appliquer. Les valeurs possibles sont 'CA' pour les carbones alpha, 
+                'all' pour tous les atomes, et 'backbone' pour les atomes du backbone.
+
+        Returns:
+            tuple: Un tuple contenant les deux structures PDB alignées. Chaque structure est représentée par un objet
+                Bio.PDB.Structure.Structure.
+        """
         # Initialiser le parseur PDB
         parser = PDBParser()
 
@@ -149,6 +177,22 @@ class RMSDCalculatorApp:
         return self.structure1, self.structure2
 
     def calculate_rmsd(self, structure1, structure2, align_type):
+        """Calcul du RMSD entre deux structures alignées en fonction du type d'alignement spécifié.
+
+        Cette méthode calcule le RMSD entre deux structures alignées en fonction du type d'alignement spécifié, 
+        tel que les carbones alpha, tous les atomes, ou seulement le backbone. Les atomes des deux structures 
+        sont comparés atom par atom, et le RMSD est calculé en prenant en compte la différence quadratique moyenne
+        entre les positions des atomes.
+
+        Args:
+            structure1 (Bio.PDB.Structure.Structure): Première structure PDB alignée.
+            structure2 (Bio.PDB.Structure.Structure): Deuxième structure PDB alignée.
+            align_type (str): Type d'alignement à appliquer. Les valeurs possibles sont 'CA' pour les carbones alpha, 
+                'all' pour tous les atomes, et 'backbone' pour les atomes du backbone.
+
+        Returns:
+            float: La valeur du RMSD calculée en Ångströms.
+        """
         atoms1 = []
         atoms2 = []
 
@@ -177,8 +221,17 @@ class RMSDCalculatorApp:
 
         return rmsd
     
+
     def calculate_and_display_rmsd(self):
-        # Ici, vous calculeriez le RMSD entre les structures et stockeriez la valeur dans la variable rmsd
+        """Calcule le RMSD entre deux structures alignées et affiche le résultat.
+
+        Cette méthode récupère les fichiers PDB des identifiants spécifiés, les aligne selon le type d'alignement
+        sélectionné, calcule le RMSD entre les structures alignées, puis affiche le résultat dans la zone de texte
+        de l'interface utilisateur.
+
+        Returns:
+            None
+        """
         # on récupère les fichiers pdb téléchargés
         fichier1_pdb =  self.get_structure_from_pdb_id(self.pdb_id_1)
         fichier2_pdb =self.get_structure_from_pdb_id(self.pdb_id_2)
@@ -199,6 +252,14 @@ class RMSDCalculatorApp:
 
 
     def copy_rmsd_to_clipboard(self):
+        """Copie la valeur du RMSD affichée dans la zone de texte dans le presse-papiers.
+
+        Cette méthode extrait la valeur du RMSD à partir de la zone de texte de l'interface utilisateur, puis la
+        copie dans le presse-papiers.
+
+        Returns:
+            None
+        """
         # Récupérer la valeur du RMSD depuis la zone de texte
         rmsd_value = self.output_text.get("1.0", tk.END)
         
