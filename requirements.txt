@@ -5,3 +5,4 @@ MDAnalysisTests==2.7.0
 nglview==3.1.2
 pyperclip==1.8.2
 mdtraj==1.9.9
+pandas==2.2.1
