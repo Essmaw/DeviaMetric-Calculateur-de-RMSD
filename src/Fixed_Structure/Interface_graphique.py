@@ -26,7 +26,7 @@ import tkinter as tk
 from tkinter import ttk
 from Bio import BiopythonWarning
 from Bio.PDB import PDBParser, Superimposer
-#import pyperclip
+import pyperclip
 # pour ignorer les warnings
 warnings.filterwarnings('ignore', category=DeprecationWarning)
 warnings.filterwarnings('ignore', category=UserWarning)
